@@ -3,12 +3,11 @@
 import sys
 import qi
 import os
-import socket
+from kairos_face import verify
 
-class POCMainApp(object):
+class MyFriendApp(object):
     subscriber_list = []
     loaded_topic = ""
-
     def __init__(self, application):
         # Getting a session that will be reused everywhere
         self.application = application
@@ -168,7 +167,7 @@ if __name__ == "__main__":
     # run : python main.py --qi-url 123.123.123.123
     app = qi.Application(sys.argv)
     app.start()
-    service_instance = POCMainApp(app)
+    service_instance = MyFriendApp(app)
     service_id = app.session.registerService(service_instance.service_name, service_instance)
     service_instance.start_app()
     app.run()
