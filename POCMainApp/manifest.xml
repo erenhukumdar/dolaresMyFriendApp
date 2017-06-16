@@ -12,8 +12,14 @@
  <contents>
   <behaviorContent path="main_behavior">
    <nature>interactive</nature>
+   <autonomous>
+    <condition purpose="launchTrigger"><![CDATA[('Launchpad/NumPeopleZone1' > 0 ) ]]></condition>
+   </autonomous>
    <permissions/>
   </behaviorContent>
+  <dialogContent topicName="myfriend" typeVersion="1.0">
+   <topic path="myfriend/myfriend_enu.top" language="en_US"/>
+  </dialogContent>
  </contents>
  <services>
   <service autorun="false" name="MyFriendApp" execStart="main.py"/>

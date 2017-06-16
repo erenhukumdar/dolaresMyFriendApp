@@ -3,7 +3,9 @@
 import sys
 import qi
 import os
-from kairos_face import verify
+# from kairos_face import verify
+from kairos_face import enroll
+from kairos_face import recognize
 
 class MyFriendApp(object):
     subscriber_list = []
@@ -20,6 +22,9 @@ class MyFriendApp(object):
         # Do some initializations before the service is registered to NAOqi
         self.logger.info("Initializing...")
         # @TODO: insert init functions here
+
+        self.preferences = self.session.service("ALPreferenceManager")
+        self.preferences.update()
         self.connect_to_preferences()
         self.create_signals()
         self.logger.info("Initialized!")
@@ -60,12 +65,20 @@ class MyFriendApp(object):
     def connect_to_preferences(self):
         # connects to cloud preferences library and gets the initial prefs
         try:
-            self.preferences = self.session.service("ALPreferenceManager")
-            self.preferences.update()
-            self.cm_ip = self.preferences.getValue('cm', 'cm_ip')
-            self.cm_port = self.preferences.getValue('cm', 'cm_port')
 
-            self.logger.info("ip=".format(self.cm_ip))
+            self.gallery_name = self.preferences.getValue('my_friend', "gallery_name")
+            self.folder_path = self.preferences.getValue('my_friend', "folder_path")
+            self.logger.info(self.folder_path)
+            self.threshold = float(str(self.preferences.getValue('my_friend', "threshold")))
+
+            self.logger.info(self.threshold)
+            self.record_folder = self.preferences.getValue('my_friend', "record_folder")
+            self.photo_count = int(self.preferences.getValue('my_friend', "photo_count"))
+            self.resolution = int(self.preferences.getValue('my_friend', "resolution"))
+            print(self.resolution)
+            self.camera_id = int(self.preferences.getValue('my_friend', "camera_id"))
+            self.picture_format = self.preferences.getValue('my_friend', "picture_format")
+            self.file_name = self.preferences.getValue('my_friend', "file_name")
         except Exception, e:
             self.logger.info("failed to get preferences".format(e))
         self.logger.info("Successfully connected to preferences system")
@@ -76,22 +89,22 @@ class MyFriendApp(object):
         # When you can, prefer qi.Signals instead of ALMemory events
         memory = self.session.service("ALMemory")
 
-        self.subscriber = self.memory.subscriber("FaceDetected")
-        self.subscriber.signal.connect(self.on_human_tracked)
-
-        event_name = "FaceDetected"
+        # self.subscriber = self.memory.subscriber("FaceDetected")
+        # self.subscriber.signal.connect(self.on_human_tracked)
+        #
+        event_name = "UserSession/FocusedUser"
         memory.declareEvent(event_name)
         event_subscriber = memory.subscriber(event_name)
-        event_connection = event_subscriber.signal.connect(self.start_coffee_maker)
+        event_connection = event_subscriber.signal.connect(self.catch_face)
         # event_connection = event_subscriber.signal.connect(self.on_speech_faq_input)
         self.subscriber_list.append([event_subscriber, event_connection])
-
-        event_name = "CM/StopCoffeeMaker"
-        memory.declareEvent(event_name)
-        event_subscriber = memory.subscriber(event_name)
-        event_connection = event_subscriber.signal.connect(self.stop_coffee_maker)
-        # event_connection = event_subscriber.signal.connect(self.on_speech_faq_input)
-        self.subscriber_list.append([event_subscriber, event_connection])
+        #
+        # event_name = "CM/StopCoffeeMaker"
+        # memory.declareEvent(event_name)
+        # event_subscriber = memory.subscriber(event_name)
+        # event_connection = event_subscriber.signal.connect(self.stop_coffee_maker)
+        # # event_connection = event_subscriber.signal.connect(self.on_speech_faq_input)
+        # self.subscriber_list.append([event_subscriber, event_connection])
 
         self.logger.info("Event created!")
 
@@ -110,14 +123,14 @@ class MyFriendApp(object):
         self.logger.info("Loading dialog")
         dialog = self.session.service("ALDialog")
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        topic_path = os.path.realpath(os.path.join(dir_path, "CM", "CM_enu.top"))
+        topic_path = os.path.realpath(os.path.join(dir_path, "myfriend", "myfriend_enu.top"))
         self.logger.info("File is: {}".format(topic_path))
         try:
             self.loaded_topic = dialog.loadTopic(topic_path)
             dialog.activateTopic(self.loaded_topic)
             dialog.subscribe(self.service_name)
             self.logger.info("Dialog loaded!")
-            dialog.gotoTag("cmStart", "CM")
+            # dialog.gotoTag("cmStart", "CM")
             self.logger.info('tag has been located')
         except Exception, e:
             self.logger.info("Error while loading dialog: {}".format(e))
@@ -156,9 +169,67 @@ class MyFriendApp(object):
         except Exception, e:
             self.logger.info("Error while unloading tablet: {}".format(e))
 
-    @qi.bind(methodName="onExit", returnType=qi.Void)
-    def on_exit(self, value):
-        self.stop_app()
+    @qi.bind(methodName="registerFace", paramsType=(qi.String, qi.String, ), returnType=qi.Bool)
+    def register_face(self, customer_id, picture_name):
+        try:
+            file_path = self.get_picture_path(picture_name)
+            response = enroll.enroll_face(subject_id=customer_id, gallery_name=self.gallery_name, file=file_path)
+            self.logger.info(response)
+            return True
+        except Exception, e:
+            self.logger.error(e);
+            return False
+
+    @qi.nobind
+    def get_picture_path(self, picture_name):
+        image_path = self.folder_path + picture_name
+        return image_path
+
+    @qi.nobind
+    def take_picture(self):
+        life_service = self.session.service("ALAutonomousLife")
+        life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
+        self.logger.info('taking picture')
+        camera = self.session.service("ALPhotoCapture")
+        camera.setResolution(self.resolution)
+        camera.setCameraID(self.camera_id)
+        camera.setPictureFormat(self.picture_format)
+        camera.setHalfPressEnabled(True)
+        camera.takePictures(self.photo_count, self.record_folder, self.file_name)
+        life_service = self.session.service("ALAutonomousLife")
+        life_service.setAutonomousAbilityEnabled("BasicAwareness", True)
+
+    @qi.bind(methodName="recognizeFace", paramsType=(qi.String, ), returnType=qi.Void)
+    def recognize_face(self, picture_name):
+        self.logger.info('face recognition is working')
+        image_path = self.get_picture_path(picture_name)
+        try:
+            response = recognize.recognize_face(file=image_path, gallery_name=self.gallery_name)
+            print(response)
+            status = response['images'][0]['transaction']['status']
+            if status != 'failure':
+                confidence = float(response['images'][0]['transaction']['confidence'])
+                if confidence > self.threshold:
+                    customer_id = response['images'][0]['transaction']['subject_id']
+                    result = customer_id
+                else:
+                    result = 'low_confidence'
+            else:
+                result = 'failure'
+
+            self.logger.info(result)
+        except Exception, e:
+            self.logger.error(e)
+            result = 'failure'
+        memory = self.session.service("ALMemory")
+        memory.raiseEvent("MyFriend/Result", result)
+
+    @qi.nobind
+    def catch_face(self, value):
+        self.logger.info('event raised')
+        if value > 0:
+            self.take_picture()
+            self.recognize_face(self.file_name)
 
 
 
