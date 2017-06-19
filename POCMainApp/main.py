@@ -6,6 +6,8 @@ import os
 # from kairos_face import verify
 from kairos_face import enroll
 from kairos_face import recognize
+from datetime import datetime
+from customerquery import CustomerQuery
 
 class MyFriendApp(object):
     subscriber_list = []
@@ -96,15 +98,8 @@ class MyFriendApp(object):
         memory.declareEvent(event_name)
         event_subscriber = memory.subscriber(event_name)
         event_connection = event_subscriber.signal.connect(self.catch_face)
-        # event_connection = event_subscriber.signal.connect(self.on_speech_faq_input)
+
         self.subscriber_list.append([event_subscriber, event_connection])
-        #
-        # event_name = "CM/StopCoffeeMaker"
-        # memory.declareEvent(event_name)
-        # event_subscriber = memory.subscriber(event_name)
-        # event_connection = event_subscriber.signal.connect(self.stop_coffee_maker)
-        # # event_connection = event_subscriber.signal.connect(self.on_speech_faq_input)
-        # self.subscriber_list.append([event_subscriber, event_connection])
 
         self.logger.info("Event created!")
 
@@ -187,9 +182,9 @@ class MyFriendApp(object):
 
     @qi.nobind
     def take_picture(self):
+        self.logger.info(str(datetime.now()) + 'take picture start')
         life_service = self.session.service("ALAutonomousLife")
         life_service.setAutonomousAbilityEnabled("BasicAwareness", False)
-        self.logger.info('taking picture')
         camera = self.session.service("ALPhotoCapture")
         camera.setResolution(self.resolution)
         camera.setCameraID(self.camera_id)
@@ -198,20 +193,26 @@ class MyFriendApp(object):
         camera.takePictures(self.photo_count, self.record_folder, self.file_name)
         life_service = self.session.service("ALAutonomousLife")
         life_service.setAutonomousAbilityEnabled("BasicAwareness", True)
+        self.logger.info(str(datetime.now()) + 'take picture finished')
 
     @qi.bind(methodName="recognizeFace", paramsType=(qi.String, ), returnType=qi.Void)
     def recognize_face(self, picture_name):
-        self.logger.info('face recognition is working')
+        self.logger.info(str(datetime.now()) + 'recognize started')
         image_path = self.get_picture_path(picture_name)
         try:
+            self.logger.info(str(datetime.now()) + 'request sent')
             response = recognize.recognize_face(file=image_path, gallery_name=self.gallery_name)
-            print(response)
+            self.logger.info(str(datetime.now()) + 'response arrived')
             status = response['images'][0]['transaction']['status']
             if status != 'failure':
                 confidence = float(response['images'][0]['transaction']['confidence'])
                 if confidence > self.threshold:
                     customer_id = response['images'][0]['transaction']['subject_id']
-                    result = customer_id
+                    memory = self.session.service('ALMemory')
+                    memory.insertData("Global/CurrentCustomerNumber", str(customer_id))
+                    customer = CustomerQuery()
+                    customer.query_customer(customer_id, "U")
+                    result = customer.name + " " + customer.last_name
                 else:
                     result = 'low_confidence'
             else:
@@ -223,11 +224,17 @@ class MyFriendApp(object):
             result = 'failure'
         memory = self.session.service("ALMemory")
         memory.raiseEvent("MyFriend/Result", result)
+        memory = self.session.service("ALMemory")
+        memory.raiseEvent("MyFriend/FinishTime", str(datetime.now()))
+
 
     @qi.nobind
     def catch_face(self, value):
-        self.logger.info('event raised')
+
         if value > 0:
+            memory = self.session.service("ALMemory")
+            memory.raiseEvent("MyFriend/PrintTime", str(datetime.now()))
+            self.logger.info(str(datetime.now()) + 'catch face event raised')
             self.take_picture()
             self.recognize_face(self.file_name)
 
