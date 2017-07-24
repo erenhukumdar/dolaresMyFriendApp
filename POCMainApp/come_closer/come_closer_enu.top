@@ -1,0 +1,17 @@
+topic: ~come_closer()
+language: enu
+
+# Defining extra concepts out of words or group of words
+#concept:(hello) [hello hi hey "good morning" greetings]
+
+# Catching inputs and triggering outputs
+#u:(e:onStart) $onStopped=1
+
+# Replying to speech
+#u:(~hello) ~hello
+
+concept:(come) ^rand["hey don't be shy ^start(animations/Stand/Gestures/ComeOn_1) come closer" "I can see you!  ^start(animations/Stand/Gestures/Hey_1) Come and meet me!" "I think ^start(animations/Stand/Gestures/Hey_1) I can help you." "would you like ^start(animations/Stand/Gestures/Hey_1) to meet me?"]
+
+u:(e:onStart) ^gotoReactivate(comeCloser)
+
+proposal:%comeCloser ~come $onStopped=1

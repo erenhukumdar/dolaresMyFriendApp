@@ -1,5 +1,5 @@
 from kairos_face import recognize
-import requests
+
 
 
 image_path = "/Users/erenhukumdar/Projects/Pepper/logs/myfriend.jpg"

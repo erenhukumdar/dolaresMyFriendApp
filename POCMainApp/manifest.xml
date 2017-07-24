@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<package version="0.0.0" uuid="pocmainapp-06f733">
+<package uuid="pocmainapp-06f733" version="0.0.0">
  <names>
   <name lang="en_US">MyFriendApp</name>
  </names>
@@ -13,16 +13,27 @@
   <behaviorContent path="main_behavior">
    <nature>interactive</nature>
    <autonomous>
-    <condition purpose="launchTrigger"><![CDATA[('Launchpad/NumPeopleZone1' > 0 ) ]]></condition>
+    <condition purpose="launchTrigger"><![CDATA[('Launchpad/NumPeopleZone1' > 0 ) && (('Launchpad/FocusedActivity'=="pocmainapp-06f733/come_behavior") || ('Launchpad/FocusedActivity'=="")) && (('Launchpad/TrackedHumanIsLookingAtRobot'>0) ~ 3)]]></condition>
    </autonomous>
    <permissions/>
   </behaviorContent>
-  <dialogContent topicName="myfriend" typeVersion="1.0">
-   <topic path="myfriend/myfriend_enu.top" language="en_US"/>
-  </dialogContent>
+  <behaviorContent path="come_behavior">
+   <nature>solitary</nature>
+   <names>
+    <name lang="en_US">come_behavior</name>
+   </names>
+   <autonomous>
+    <condition purpose="launchTrigger"><![CDATA[('Launchpad/NumPeopleZone1' == 0 ) && (('Launchpad/NumPeopleZone2' > 0 )  ~ 5 || ('Launchpad/NumPeopleZone3' > 0 )  ~ 5)]]></condition>
+   </autonomous>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="empty">
+   <nature>interactive</nature>
+   <permissions/>
+  </behaviorContent>
  </contents>
  <services>
-  <service autorun="false" name="MyFriendApp" execStart="main.py"/>
+  <service execStart="main.py" autorun="false" name="MyFriendApp"/>
  </services>
  <executableFiles>
   <file path="main.py"/>

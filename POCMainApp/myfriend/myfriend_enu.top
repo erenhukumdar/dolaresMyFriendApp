@@ -10,5 +10,84 @@ language: enu
 # Replying to speech
 #u:(~hello) ~hello
 
+concept:(firstGreet)  ["\RSPD=90\ welcome to ish bank San Francisco branch. I am a new employee of the bank. I can help you about your questions, taking queue number or I can be your financial assistant."] 
+concept:(knownPersonStart) I am glad to see you again   
+concept:(knownPersonFinish) I hope you are having a good time. 
+concept:(unknownPerson) I love meeting with new people. Since this is your first interaction with me, I strongly recommend you complete a quick training before anything else. Would you like to open training first?   
+concept:(needTime) Today weather seems realy good. I hope I can help you.
+concept:(authChoice) please tell me, what you want to do? You can simply choose from my tablet or you can tell me!
+concept:(faq) ["FAQ" "* ask question"]
+concept:(qmatic) ["* queue number" "q matic" "queue matic"]
+concept:(training) ["training" "train" "guide"] 
+concept:(unknownKid) ["Hey little buddy! I hope you are having fun! I am really excited to meet you"]
+concept:(kidsChoice) ["What would you like to with me? We can play a game, take a selfie or we can talk about your piggy bank"]
+concept:(game) ["* game" "lets play" "play with me"]
+concept:(selfie) ["* selfie" "take a photo"]
+concept:(safe) ["piggybank" "piggy bank" "money safe" "safe"]
+concept:(executionError) ["I am sorry, I couldn't do your request, I feel a little sick. I should rest for a while."]
+concept:(helloAgain) ["Would you like to continue?"]
+concept:(choice) ^rand["it is great choice" "you know what you want" "fabulous choice"]
+concept:(yes) yes
+concept:(no) no
+concept:(bye) ["I am glad to meet you. I hope, I can see you later. Please follow me on social media!"]
+concept:(nospeak20) ["I think you forgot me. See you later!"]
+concept:(nospeak10) ["Are you there?"]
+concept:(getConfirmation) ["If I know you I can help you faster. Would you like to authenticate first?"]
+concept:(confirmationYes) ["I am really excited to meet you"]
+concept:(confirmationNo) ["I hope one day we can meet more closely"]
+concept:(finie) ["Financial Asistant" "Asistant" "asistance"]
 
-u:(e:MyFriend/Result) $MyFriend/Result
+u:(e:MyFriend/ChosenApp) ^gotoReactivate(choice)
+u:(e:MyFriend/ExecutionError)  ^gotoReactivate(execError)
+u:(e:MyFriend/GetConfirmation) ^gotoReactivate(getConfirmation)
+u:(e:MyFriend/ExitApp) ^gotoReactivate(byebye)
+
+proposal:%firstGreet ~firstGreet $MyFriend/CheckMemory=$UserSession/FocusedUser  $MyFriend/NotSpeak=0 
+    u1:(e:MyFriend/LauncherForAdultKnown) ~knownPersonStart $MyFriend/LauncherForAdultKnown ~knownPersonFinish ^gotoReactivate(authMainLauncher)
+    u1:(e:MyFriend/LauncherForAdultUnknown) ~unknownPerson 
+        u2:(~yes)  $MyFriend/ChosenApp = 2
+        u2:(~no) "OK" ^gotoReactivate(authMainLauncher)
+    u1:(e:MyFriend/LauncherForKids) ~unknownKid ^gotoReactivate(mainLauncherForKids)
+    u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==0) ~nospeak10 $MyFriend/NotSpeak=1 ^stayInScope
+    u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==1) ^gotoReactivate(byebye)
+    
+proposal:%helloAgain ~helloAgain  $MyFriend/NotSpeak=0  $MyFriend/CheckMemory=$UserSession/FocusedUser
+    u1:(~yes) $MyFriend/CheckMemory=$UserSession/FocusedUser
+        u2:(e:MyFriend/LauncherForAdultKnown) ^gotoReactivate(authMainLauncher)
+        u2:(e:MyFriend/LauncherForAdultUnknown) ^gotoReactivate(authMainLauncher)
+        u2:(e:MyFriend/LauncherForKids) ^gotoReactivate(mainLauncherForKids)
+    u1:(~no)  ^gotoReactivate(byebye)
+    u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==0) ~nospeak10 $MyFriend/NotSpeak=1 ^stayInScope
+    u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==1) ^gotoReactivate(byebye)
+         
+    
+proposal:%authMainLauncher ~authChoice  $MyFriend/NotSpeak=0  
+    u1:(~faq) $MyFriend/ChosenApp = 1
+    u1:(~training) $MyFriend/ChosenApp = 2 
+    u1:(~qmatic) $MyFriend/ChosenApp = 3 
+    u1:(~finie) $MyFriend/ChosenApp = 7 
+    u1:(~selfie) $MyFriend/ChosenApp = 5 
+    u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==0) ~nospeak10 $MyFriend/NotSpeak=1 ^stayInScope
+    u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==1) ^gotoReactivate(byebye)
+    
+proposal:%mainLauncherForKids ~kidsChoice $MyFriend/NotSpeak=0  
+    u1:(~game) $MyFriend/ChosenApp = 4
+    u1:(~selfie)  $MyFriend/ChosenApp = 5 
+    u1:(~safe)  $MyFriend/ChosenApp = 6 
+    u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==0) ~nospeak10 $MyFriend/NotSpeak=1 ^stayInScope
+    u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==1) ^gotoReactivate(byebye)
+            
+u:(test) $MyFriend/Rest=1
+
+proposal:%execError ~executionError $MyFriend/Rest=1
+
+proposal:%byebye ~bye $MyFriend/Exit=0
+
+proposal:%choice ~choice
+
+proposal:%getConfirmation ~getConfirmation
+    u1:(~yes) ~confirmationYes $MyFriend/RunWithAuth=$MyFriend/GetConfirmation
+    u1:(~no) ~confirmationNo $MyFriend/RunWithoutAuth=$MyFriend/GetConfirmation
+
+
+

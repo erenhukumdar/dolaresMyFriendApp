@@ -1,0 +1,95 @@
+body {
+    width: 1280px;
+    height: 800px;
+    font: 71%/1.5 Verdana, Sans-Serif;
+    background: #eee;
+}
+.leaveapp
+{
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    top: 10px;
+    left: 1120px;
+}
+#exit
+{
+    background: #e27378;
+    border: 5px solid #e27378;
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 5%;
+    text-align: center;
+    line-height: 80px;
+    font-size: 80px;
+    color: snow;
+}
+
+
+li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.logo_container {
+    top: 0px;
+    left: 0px;
+    position: absolute;
+}
+
+#item_adult {
+    top: 150px;
+    left: 0px;
+    position: absolute;
+    margin: 0 auto;
+    visibility: hidden;
+}
+
+#item_kids {
+    top: 150px;
+    left: 0px;
+    position: absolute;
+    margin: 0 auto;
+    visibility: hidden;
+
+
+}
+
+.item {
+    float: left;
+    width: 198px;
+    height: 198px;
+    background: #fff;
+    border: 1px solid #f9f9f9;
+    border-radius: 5px;
+    margin: 45px 0px 45px 100px;
+    font-size:80px;
+    text-align:center;
+    color:black;
+
+}
+
+.inline_text{
+    font-size: 24pt;
+
+}
+
+table {
+    margin: 0 auto; /* or margin: 0 auto 0 auto */
+  }
+.glowing-item { 
+    outline: none;
+    border-color: #ed9e9e;
+    box-shadow: 0 0 100px #ed9e9e;
+}
+
+.rotate{
+    transform: rotate(90deg);
+}
+
+.clearl{
+    clear: left;
+}
+
