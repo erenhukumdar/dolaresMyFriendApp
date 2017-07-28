@@ -2,7 +2,12 @@ body {
     width: 1280px;
     height: 800px;
     font: 71%/1.5 Verdana, Sans-Serif;
-    background: #eee;
+    /*background: url('http://localhost/msite/images/12.PNG');*/
+    background: #eee no-repeat center;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
 }
 .leaveapp
 {

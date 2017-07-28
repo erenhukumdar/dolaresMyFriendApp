@@ -28,7 +28,7 @@ function launcherForKids(value) {
     document.getElementById("item_adult").style.visibility = 'hidden';
     document.body.style.backgroundImage='url(images/baloon.jpg)';
     // document.body.style.backgroundRepeat='';
-    document.body.style.backgroundSize='100%';
+    //document.body.style.backgroundSize='100%';
 
 }
 

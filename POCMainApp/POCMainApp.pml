@@ -36,6 +36,8 @@
         <File name="main" src="html/js/main.js" />
         <File name="qimessaging_helper" src="html/js/qimessaging_helper.js" />
         <File name="baloon" src="html/images/baloon.jpg" />
+        <File name="logo_big1" src="html/images/logo_big1.jpg" />
+        <File name="logo_big_blue" src="html/images/logo_big_blue.jpg" />
     </Resources>
     <Topics>
         <Topic name="myfriend_enu" src="myfriend/myfriend_enu.top" topicName="myfriend" language="en_US" />

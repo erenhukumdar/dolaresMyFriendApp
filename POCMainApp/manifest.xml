@@ -23,7 +23,7 @@
     <name lang="en_US">come_behavior</name>
    </names>
    <autonomous>
-    <condition purpose="launchTrigger"><![CDATA[('Launchpad/NumPeopleZone1' == 0 ) && (('Launchpad/NumPeopleZone2' > 0 )  ~ 5 || ('Launchpad/NumPeopleZone3' > 0 )  ~ 5)]]></condition>
+    <condition purpose="launchTrigger"><![CDATA[('Launchpad/NumPeopleZone1' == 0 ) &&( (('Launchpad/NumMotionZone2' > 0 )  || ('Launchpad/NumMotionZone3' > 0 )) || (('Launchpad/NumPeopleZone2' > 0 )  ~ 3 || ('Launchpad/NumPeopleZone3'' > 0 )  ~ 3))]]></condition>
    </autonomous>
    <permissions/>
   </behaviorContent>
@@ -33,7 +33,7 @@
   </behaviorContent>
  </contents>
  <services>
-  <service execStart="main.py" autorun="false" name="MyFriendApp"/>
+  <service autorun="false" name="MyFriendApp" execStart="main.py"/>
  </services>
  <executableFiles>
   <file path="main.py"/>

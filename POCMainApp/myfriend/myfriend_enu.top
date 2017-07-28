@@ -10,15 +10,30 @@ language: enu
 # Replying to speech
 #u:(~hello) ~hello
 
+concept:(howquestion) {*}["How {are do} you {feel do}{ing}?" "What's up?"]
+concept:(howanswer) ^rand["I am good." "I am doing great." "I feel amazing."]
+concept:(whoquestion) {*}["Who are you?" "What is your name?"]
+concept:(whoanswer) I am Pepper ^rand[" and I love humans" " and I am here to help you." " How can I help you?"]
+concept:(oldquestion) {*}["How old are you?"]
+concept:(oldanswer) I feel very young and energetic.
+concept:(whatquestion) What can you do for me?
+concept:(whatanswer) I can answer your questions and tell you about your financial information. I can give you queue number.
+concept:(anotherRobot) Do you know ["C 3 P O" "C3PO" "Terminator"]?
+concept:(anotherRobotAnswer) Hey, they are just movie characters. I am real.
+concept:(genderquestion) Are you a ["girl" "boy" "man" "woman" "men" "women"]?
+concept:(genderanswer) I am just a robot. 
+############################################################################
 concept:(firstGreet)  ["\RSPD=90\ welcome to ish bank San Francisco branch. I am a new employee of the bank. I can help you about your questions, taking queue number or I can be your financial assistant."] 
 concept:(knownPersonStart) I am glad to see you again   
 concept:(knownPersonFinish) I hope you are having a good time. 
 concept:(unknownPerson) I love meeting with new people. Since this is your first interaction with me, I strongly recommend you complete a quick training before anything else. Would you like to open training first?   
 concept:(needTime) Today weather seems realy good. I hope I can help you.
+
 concept:(authChoice) please tell me, what you want to do? You can simply choose from my tablet or you can tell me!
-concept:(faq) ["FAQ" "* ask question"]
-concept:(qmatic) ["* queue number" "q matic" "queue matic"]
-concept:(training) ["training" "train" "guide"] 
+
+concept:(faq) ["FAQ" "F A Q" "* ask question" "what is *" "how can *"]
+concept:(qmatic) ["* queue number" "q matic" "queue matic" "* ticket number" "* ticket"]
+concept:(training) * ["training" "train" "guide"] 
 concept:(unknownKid) ["Hey little buddy! I hope you are having fun! I am really excited to meet you"]
 concept:(kidsChoice) ["What would you like to with me? We can play a game, take a selfie or we can talk about your piggy bank"]
 concept:(game) ["* game" "lets play" "play with me"]
@@ -35,7 +50,8 @@ concept:(nospeak10) ["Are you there?"]
 concept:(getConfirmation) ["If I know you I can help you faster. Would you like to authenticate first?"]
 concept:(confirmationYes) ["I am really excited to meet you"]
 concept:(confirmationNo) ["I hope one day we can meet more closely"]
-concept:(finie) ["Financial Asistant" "Asistant" "asistance"]
+concept:(finie) ["Financial Asistant" "Asistant" "asistance" "what is my *"]
+concept:(notUnderstood) I am sorry. I couldn't understand you. For instance, you can use ^rand["Financial Asistance" "FAQ" "Queue Matic" "Selfie"] by clicking from tablet menu or just say the name of the item.
 
 u:(e:MyFriend/ChosenApp) ^gotoReactivate(choice)
 u:(e:MyFriend/ExecutionError)  ^gotoReactivate(execError)
@@ -50,7 +66,13 @@ proposal:%firstGreet ~firstGreet $MyFriend/CheckMemory=$UserSession/FocusedUser 
     u1:(e:MyFriend/LauncherForKids) ~unknownKid ^gotoReactivate(mainLauncherForKids)
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==0) ~nospeak10 $MyFriend/NotSpeak=1 ^stayInScope
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==1) ^gotoReactivate(byebye)
-    
+    u1:(~howquestion) ~howanswer ^stayInScope
+    u1:(~whoquestion) ~whoanswer ^stayInScope
+    u1:(~oldquestion) ~oldanswer ^stayInScope
+    u1:(~whatquestion) ~whatanswer ^stayInScope
+    u1:(~anotherRobot) ~anotherRobotAnswer ^stayInScope
+    u1:(~genderquestion) ~genderanswer ^stayInScope
+      
 proposal:%helloAgain ~helloAgain  $MyFriend/NotSpeak=0  $MyFriend/CheckMemory=$UserSession/FocusedUser
     u1:(~yes) $MyFriend/CheckMemory=$UserSession/FocusedUser
         u2:(e:MyFriend/LauncherForAdultKnown) ^gotoReactivate(authMainLauncher)
@@ -69,6 +91,13 @@ proposal:%authMainLauncher ~authChoice  $MyFriend/NotSpeak=0
     u1:(~selfie) $MyFriend/ChosenApp = 5 
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==0) ~nospeak10 $MyFriend/NotSpeak=1 ^stayInScope
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==1) ^gotoReactivate(byebye)
+    u1:(e:Dialog/NotUnderstood2) ~notUnderstood ^stayInScope
+    u1:(~howquestion) ~howanswer ^stayInScope
+    u1:(~whoquestion) ~whoanswer ^stayInScope
+    u1:(~oldquestion) ~oldanswer ^stayInScope
+    u1:(~whatquestion) ~whatanswer ^stayInScope
+    u1:(~anotherRobot) ~anotherRobotAnswer ^stayInScope
+    u1:(~genderquestion) ~genderanswer ^stayInScope      
     
 proposal:%mainLauncherForKids ~kidsChoice $MyFriend/NotSpeak=0  
     u1:(~game) $MyFriend/ChosenApp = 4
@@ -76,9 +105,14 @@ proposal:%mainLauncherForKids ~kidsChoice $MyFriend/NotSpeak=0
     u1:(~safe)  $MyFriend/ChosenApp = 6 
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==0) ~nospeak10 $MyFriend/NotSpeak=1 ^stayInScope
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==1) ^gotoReactivate(byebye)
-            
-u:(test) $MyFriend/Rest=1
-
+    u1:(e:Dialog/NotUnderstood2) ~notUnderstood ^stayInScope        
+    u1:(~howquestion) ~howanswer ^stayInScope
+    u1:(~whoquestion) ~whoanswer ^stayInScope
+    u1:(~oldquestion) ~oldanswer ^stayInScope
+    u1:(~whatquestion) ~whatanswer ^stayInScope
+    u1:(~anotherRobot) ~anotherRobotAnswer ^stayInScope
+    u1:(~genderquestion) ~genderanswer ^stayInScope
+    
 proposal:%execError ~executionError $MyFriend/Rest=1
 
 proposal:%byebye ~bye $MyFriend/Exit=0
@@ -89,5 +123,14 @@ proposal:%getConfirmation ~getConfirmation
     u1:(~yes) ~confirmationYes $MyFriend/RunWithAuth=$MyFriend/GetConfirmation
     u1:(~no) ~confirmationNo $MyFriend/RunWithoutAuth=$MyFriend/GetConfirmation
 
+############################################################################
 
+proposal:%hehehe
+    u1:(~howquestion) ~howanswer ^stayInScope
+    u1:(~whoquestion) ~whoanswer ^stayInScope
+    u1:(~oldquestion) ~oldanswer ^stayInScope
+    u1:(~whatquestion) ~whatanswer ^stayInScope
+    u1:(~anotherRobot) ~anotherRobotAnswer ^stayInScope
+    u1:(~genderquestion) ~genderanswer ^stayInScope
+    
 

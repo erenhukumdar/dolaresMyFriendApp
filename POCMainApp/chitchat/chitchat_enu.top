@@ -10,8 +10,8 @@ language: enu
 # Replying to speech
 #u:(~hello) ~hello
 
-concept:(chitchat) ^rand["what a nice branch!" "Humans are great!" "I have new friends!"]
+concept:(chitchat) ^rand["what a nice branch! ^start(animations/Stand/Emotions/Positive/Happy_1)" "Humans are great! ^start(animations/LED/CircleEyes)" "I have new friends! ^start(animations/Stand/Emotions/Positive/Happy_3)"]
 
-u:(e:onStart) ~chitchat ^gotoReactivate(chitchat)
+u:(e:onStart) ^gotoReactivate(chitchat)
 
-proposal:%chitchat ~chitchat 
+proposal:%chitchat ~chitchat $onStopped=1

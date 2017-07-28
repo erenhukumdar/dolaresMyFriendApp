@@ -16,6 +16,7 @@ from customerquery import CustomerQuery
 class MyFriendApp(object):
     subscriber_list = []
     loaded_topic = ""
+
     def __init__(self, application):
         # Getting a session that will be reused everywhere
         self.application = application
@@ -28,11 +29,10 @@ class MyFriendApp(object):
         # Do some initializations before the service is registered to NAOqi
         self.logger.info("Initializing...")
         # @TODO: insert init functions here
-
+        self.create_signals()
         self.preferences = self.session.service("ALPreferenceManager")
         self.preferences.update()
         self.connect_to_preferences()
-        self.create_signals()
         self.logger.info("Initialized!")
 
     @qi.nobind
@@ -40,7 +40,6 @@ class MyFriendApp(object):
         # do something when the service starts
         print "Starting app..."
         # @TODO: insert whatever the app should do to start
-
         self.show_screen()
         self.start_dialog()
         self.logger.info("Started!")
@@ -276,12 +275,16 @@ class MyFriendApp(object):
                 confidence = float(response['images'][0]['transaction']['confidence'])
                 if confidence > self.threshold:
                     customer_id = response['images'][0]['transaction']['subject_id']
-                    self.logger.info("customer info:"+customer_id)
-                    customer = CustomerQuery()
-                    customer.query_customer(customer_id, "U")
-                    result = customer.name + " " + customer.last_name
-                    self.logger.info("known person detected:" + result)
-                    memory.insertData("Global/CurrentCustomer", str(customer.jsonify()))
+                    if customer_id != "":
+                        self.logger.info("customer info:"+customer_id)
+                        customer = CustomerQuery()
+                        customer.query_customer(customer_id, "U")
+                        result = customer.name + " " + customer.last_name
+                        self.logger.info("known person detected:" + result)
+                        memory.insertData("Global/CurrentCustomer", str(customer.jsonify()))
+                    else:
+                        self.logger.info('no customer')
+                        result = 'failure'
                 else:
                     result = 'low_confidence'
             else:
@@ -429,6 +432,7 @@ class MyFriendApp(object):
     def return_to_idle(self, value):
         self.memory_cleanup
         self.launch_app("0")
+
     @qi.nobind
     def memory_cleanup(self):
         memory = self.session.service('ALMemory')
@@ -438,6 +442,10 @@ class MyFriendApp(object):
             self.logger.error(e)
         try:
            memory.removeData("Global/RedirectingApp")
+        except Exception, e:
+            self.logger.error(e)
+        try:
+           memory.removeData("Global/QueueData")
         except Exception, e:
             self.logger.error(e)
         try:
