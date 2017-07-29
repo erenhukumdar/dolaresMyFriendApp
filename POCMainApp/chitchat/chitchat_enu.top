@@ -10,7 +10,7 @@ language: enu
 # Replying to speech
 #u:(~hello) ~hello
 
-concept:(chitchat) ^rand["what a nice branch! ^start(animations/Stand/Emotions/Positive/Happy_1)" "Humans are great! ^start(animations/LED/CircleEyes)" "I have new friends! ^start(animations/Stand/Emotions/Positive/Happy_3)"]
+concept:(chitchat) ^rand["^run(animations/Stand/Emotions/Positive/Amused_1) \style=joyful\ what a nice branch! " "^run(animations/Stand/Emotions/Negative/Bored_1) \style=didactic\ I need more friend! " "\style=didactic\ Don't you love me! ^run(animations/Stand/Emotions/Negative/Bored_1)" "^run(animations/Stand/Emotions/Negative/Bored_1) \style=didactic\ I am lonely today! "]
 
 u:(e:onStart) ^gotoReactivate(chitchat)
 
