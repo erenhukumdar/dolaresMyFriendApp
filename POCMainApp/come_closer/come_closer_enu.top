@@ -10,7 +10,7 @@ language: enu
 # Replying to speech
 #u:(~hello) ~hello
 
-concept:(come) ^rand["hey don't be shy ^start(animations/Stand/Gestures/ComeOn_1) come closer" "I can see you!  ^start(animations/Stand/Gestures/Hey_1) Come and meet me!" "I think ^start(animations/Stand/Gestures/Hey_1) I can help you." "would you like ^start(animations/Stand/Gestures/Hey_1) to meet me?"]
+concept:(come) ["hey don't be shy ^start(animations/Stand/Gestures/ComeOn_1) come closer"]
 
 u:(e:onStart) ^gotoReactivate(comeCloser)
 

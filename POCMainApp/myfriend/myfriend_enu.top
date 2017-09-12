@@ -23,7 +23,7 @@ concept:(anotherRobotAnswer) Hey, they are just movie characters. I am real.
 concept:(genderquestion) Are you a ["girl" "boy" "man" "woman" "men" "women"]?
 concept:(genderanswer) I am just a robot. 
 ############################################################################
-concept:(firstGreet)  ["\RSPD=90\ welcome to ish bank San Francisco branch. I am a new employee of the bank. I can help you about your questions, taking queue number or I can be your financial assistant."] 
+concept:(firstGreet) ^rand["\RSPD=90\ welcome to ish bank San Francisco branch. I am a new employee of the bank. I can help you about your questions, taking queue number or I can be your financial assistant." "\RSPD=90\ I am Pepper. I am your new assistant and ready to help you. You can ask me questions about transactions and your financial status. I can also help you taking queue number." "\RSPD=90\ My name is Pepper and I recently started working at this branch. Today I will be pleased to help you about your questions, or even your personal financial information. I can also give you a queue number if you prefer to talk to a human colleague of mine."] 
 concept:(knownPersonStart) I am glad to see you again   
 concept:(knownPersonFinish) I hope you are having a good time. 
 concept:(unknownPerson) I love meeting with new people. Since this is your first interaction with me, I strongly recommend you complete a quick training before anything else. Would you like to open training first?   
@@ -31,7 +31,8 @@ concept:(needTime) Today weather seems realy good. I hope I can help you.
 
 concept:(authChoice) please tell me, what you want to do? You can simply choose from my tablet or you can tell me!
 
-concept:(faq) ["FAQ" "F A Q" "* ask question" "what is *" "how can *"]
+concept:(asistant) ["FAQ" "F A Q" "* ask question" "Financial Asistant" "Asistant" "asistance"]
+concept:(directQuestion) ["what *" "how *"]
 concept:(qmatic) ["* queue number" "q matic" "queue matic" "* ticket number" "* ticket"]
 concept:(training) * ["training" "train" "guide"] 
 concept:(unknownKid) ["Hey little buddy! I hope you are having fun! I am really excited to meet you"]
@@ -42,6 +43,7 @@ concept:(safe) ["piggybank" "piggy bank" "money safe" "safe"]
 concept:(executionError) ["I am sorry, I couldn't do your request, I feel a little sick. I should rest for a while."]
 concept:(helloAgain) ["Would you like to continue?"]
 concept:(choice) ^rand["it is great choice" "you know what you want" "fabulous choice"]
+concept:(choiceDirect) ^rand["let me get it for you" "humm nice question"]
 concept:(yes) yes
 concept:(no) no
 concept:(bye) ["I am glad to meet you. I hope, I can see you later. Please follow me on social media!"]
@@ -50,20 +52,30 @@ concept:(nospeak10) ["Are you there?"]
 concept:(getConfirmation) ["If I know you I can help you faster. Would you like to authenticate first?"]
 concept:(confirmationYes) ["I am really excited to meet you"]
 concept:(confirmationNo) ["I hope one day we can meet more closely"]
-concept:(finie) ["Financial Asistant" "Asistant" "asistance" "what is my *"]
-concept:(notUnderstood) I am sorry. I couldn't understand you. For instance, you can use ^rand["Financial Asistance" "FAQ" "Queue Matic" "Selfie"] by clicking from tablet menu or just say the name of the item.
+concept:(notUnderstood) I am sorry. I couldn't understand you. For instance, you can use ^rand["Asistant" "Queue Matic" "Selfie"] by clicking from tablet menu or just say the name of the item.
+concept:(fun) ["\style=joyful\ Lets have some fun \style=neutral\ " "\style=joyful\ Yay! fun time! \style=neutral\ "]
+concept:(kids) ["kids" "kids menu" "children" "game" "I want to play a game"]
+concept:(underConstruction) "My programmer friends are still working on piggybank project. I will help you about soon! You can choose other options."
+concept:(dayPart)   $MyFriend/DayPart
+concept:(backPressed) "OK! Lets go back to main menu!"
 
-u:(e:MyFriend/ChosenApp) ^gotoReactivate(choice)
+u:(e:MyFriend/ChosenApp $MyFriend/ChosenApp==8) ^gotoReactivate(choiceDirect)
+u:(e:MyFriend/ChosenApp $MyFriend/ChosenApp<8) ^gotoReactivate(choice)
+u:(e:MyFriend/UnderConstruction) ~underConstruction
+u:(e:MyFriend/KidsFun) ~fun ^gotoReactivate(mainLauncherForKids)
 u:(e:MyFriend/ExecutionError)  ^gotoReactivate(execError)
 u:(e:MyFriend/GetConfirmation) ^gotoReactivate(getConfirmation)
 u:(e:MyFriend/ExitApp) ^gotoReactivate(byebye)
+u:(e:MyFriend/BackPressed) ~backPressed ^gotoReactivate(authMainLauncher)
 
-proposal:%firstGreet ~firstGreet $MyFriend/CheckMemory=$UserSession/FocusedUser  $MyFriend/NotSpeak=0 
-    u1:(e:MyFriend/LauncherForAdultKnown) ~knownPersonStart $MyFriend/LauncherForAdultKnown ~knownPersonFinish ^gotoReactivate(authMainLauncher)
+
+
+proposal:%firstGreet ~dayPart ~firstGreet $MyFriend/CheckMemory=$UserSession/FocusedUser  $MyFriend/NotSpeak=0 
+    u1:(e:MyFriend/LauncherForAdultKnown) ~knownPersonStart $MyFriend/LauncherForAdultKnown ~knownPersonFinish ^gotoReactivate(authMainLauncher) ~authChoice 
     u1:(e:MyFriend/LauncherForAdultUnknown) ~unknownPerson 
         u2:(~yes)  $MyFriend/ChosenApp = 2
         u2:(~no) "OK" ^gotoReactivate(authMainLauncher)
-    u1:(e:MyFriend/LauncherForKids) ~unknownKid ^gotoReactivate(mainLauncherForKids)
+    u1:(e:MyFriend/LauncherForKids) ~unknownKid ^gotoReactivate(mainLauncherForKids) ~kidsChoice 
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==0) ~nospeak10 $MyFriend/NotSpeak=1 ^stayInScope
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==1) ^gotoReactivate(byebye)
     u1:(~howquestion) ~howanswer ^stayInScope
@@ -83,12 +95,13 @@ proposal:%helloAgain ~helloAgain  $MyFriend/NotSpeak=0  $MyFriend/CheckMemory=$U
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==1) ^gotoReactivate(byebye)
          
     
-proposal:%authMainLauncher ~authChoice  $MyFriend/NotSpeak=0  
-    u1:(~faq) $MyFriend/ChosenApp = 1
+proposal:%authMainLauncher  $MyFriend/NotSpeak=0  
+    u1:(_~directQuestion) $Global/IHaveAQuestion=$1 $MyFriend/ChosenApp = 8
     u1:(~training) $MyFriend/ChosenApp = 2 
     u1:(~qmatic) $MyFriend/ChosenApp = 3 
-    u1:(~finie) $MyFriend/ChosenApp = 7 
+    u1:(~asistant) $MyFriend/ChosenApp = 7
     u1:(~selfie) $MyFriend/ChosenApp = 5 
+    u1:(~kids) $MyFriend/OpenLauncherForKids=1 
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==0) ~nospeak10 $MyFriend/NotSpeak=1 ^stayInScope
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==1) ^gotoReactivate(byebye)
     u1:(e:Dialog/NotUnderstood2) ~notUnderstood ^stayInScope
@@ -99,10 +112,10 @@ proposal:%authMainLauncher ~authChoice  $MyFriend/NotSpeak=0
     u1:(~anotherRobot) ~anotherRobotAnswer ^stayInScope
     u1:(~genderquestion) ~genderanswer ^stayInScope      
     
-proposal:%mainLauncherForKids ~kidsChoice $MyFriend/NotSpeak=0  
+proposal:%mainLauncherForKids $MyFriend/NotSpeak=0  
     u1:(~game) $MyFriend/ChosenApp = 4
     u1:(~selfie)  $MyFriend/ChosenApp = 5 
-    u1:(~safe)  $MyFriend/ChosenApp = 6 
+    u1:(~safe)  ~underConstruction
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==0) ~nospeak10 $MyFriend/NotSpeak=1 ^stayInScope
     u1:(e:Dialog/NoOneSpeak10 $MyFriend/NotSpeak==1) ^gotoReactivate(byebye)
     u1:(e:Dialog/NotUnderstood2) ~notUnderstood ^stayInScope        
@@ -118,6 +131,8 @@ proposal:%execError ~executionError $MyFriend/Rest=1
 proposal:%byebye ~bye $MyFriend/Exit=0
 
 proposal:%choice ~choice
+
+proposal:%choiceDirect ~choiceDirect
 
 proposal:%getConfirmation ~getConfirmation
     u1:(~yes) ~confirmationYes $MyFriend/RunWithAuth=$MyFriend/GetConfirmation

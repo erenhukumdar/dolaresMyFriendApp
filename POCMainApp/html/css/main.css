@@ -1,0 +1,237 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.html {
+    font-family: "tahoma", "arial";
+    color: #ffffff;
+}
+.container {
+    background-image: url("../img/bg.png");
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    width: 1280px;
+    height: 800px;
+    display: block;
+}
+.container.kids {
+    background-image: url("../img/bgKids.png");
+}
+header {
+    padding: 40px;
+    font-size: 30px;
+    color: #ffffff;
+    text-align: center;
+    overflow: auto;
+}
+header a {
+    color: #ffffff;
+    text-decoration: none;
+    border: 3px solid #ffffff;
+    border-radius: 99px;
+    padding: 16px 30px;
+}
+header span {
+    line-height: 78px;
+    font-weight: bold;
+}
+header a.leftButton {
+    background: url(../img/leftArrow.png) no-repeat center left 20px;
+    padding-left: 80px;
+    float: left;
+}
+header a.leftButton:active {
+    background-color: rgba(255,255,255,0.3)
+}
+header a.rightButton {
+    background: url(../img/rightArrow.png) no-repeat center right 20px ;
+    padding-right: 80px;
+    float: right;
+}
+header a.rightButton:active {
+    background-color: rgba(255,255,255,0.3)
+}
+article {
+    padding: 40px 180px;
+    overflow: auto;
+}
+.content {
+    width: 100%;
+    float: left;
+    text-align: center;
+    padding: 40px 0;
+}
+.main {
+    width: 100%;
+    font-size: 38px;
+    margin: 0 auto;
+    padding: 0;
+}
+.main li {
+    background: url(../img/buttonsBg.png) no-repeat 0 0;
+    background-size: 440px 220px;
+    width: 220px;
+    height: 220px;
+    display: inline-block;
+    margin: 0 30px 80px 30px;
+    position: relative;
+}
+.main li img {
+    position: absolute;
+    left: 53px;
+    top: 55px;
+}
+.main li span {
+    font-size: 26px;
+    font-weight: bold;
+    color: #ffffff;
+    top: 210px;
+    position: relative;
+}
+.main li:active {
+    background: url(../img/buttonsBg.png) no-repeat -220px 0;
+    background-size: 440px 220px;
+}
+.main li:active img {
+    left: 55px;
+    top: 57px;
+    opacity: 0.9;
+}
+
+.kids {
+    display: none;
+}
+
+/* Hide */
+
+.hidden {
+    visibility: hidden;
+}
+
+/* Hide */
+
+/* Toys */
+
+.toys {
+    position: absolute;
+}
+.toys.car {
+    top: 638px;
+    left: 850px;
+}
+.toys.plane {
+    top: 50px;
+    left: 950px;
+}
+.toys.train {
+    top: 620px;
+    left: 250px;
+}
+.toys.ball {
+    top: 610px;
+    left: 50px;
+}
+.toys.spinner {
+    top: 620px;
+    left: 1100px;
+}
+.toys.rocket {
+    width: 200px;
+    top: 180px;
+    left: 50px;
+}
+
+
+/* Toys */
+
+
+.plane {
+    float: left;
+    -webkit-animation-name: plane;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: ease-in-out;
+    -moz-animation-name: plane;
+    -moz-animation-duration: 3s;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: ease-in-out;
+    animation-name: plane;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    margin-left: 30px;
+    margin-top: 5px;
+}
+.rocket {
+    float: left;
+    -webkit-animation-name: rocket;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: ease-in-out;
+    -moz-animation-name: rocket;
+    -moz-animation-duration: 2s;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: ease-in-out;
+    animation-name: rocket;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    margin-left: 5px;
+    margin-top: 30px;
+}
+.ball {
+    float: left;
+    -webkit-animation-name: ball;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: ease-out;
+    -moz-animation-name: ball;
+    -moz-animation-duration: 1s;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: ease-out;
+    animation-name: ball;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;
+    margin-left: 0;
+    margin-top: 0;
+
+}
+
+@-webkit-keyframes rocket {
+    from {-webkit-transform:translate(0, 0px);}
+    65% {-webkit-transform:translate(15px, -10px);}
+    to {-webkit-transform: translate(0, -0px);}    
+    from {-moz-transform:translate(0, 0px);}
+    65% {-moz-transform:translate(15px, -10px);}
+    to {-moz-transform: translate(0, -0px);}  
+    from {transform:translate(0, 0px);}
+    65% {transform:translate(15px, -10px);}
+    to {transform: translate(0, -0px);}  
+}
+@-webkit-keyframes plane{
+    from {-webkit-transform:translate(0, 0px);}
+    65% {-webkit-transform:translate(0, 15px);}
+    to {-webkit-transform: translate(0, -0px);}    
+    from {-moz-transform:translate(0, 0px);}
+    65% {-moz-transform:translate(0, 15px);}
+    to {-moz-transform: translate(0, -0px);}   
+    from {transform:translate(0, 0px);}
+    65% {transform:translate(0, 15px);}
+    to {transform: translate(0, -0px);}   
+}
+@-webkit-keyframes ball{
+    from {-webkit-transform:translate(0, 0px);}
+    65% {-webkit-transform:translate(0, -75px);}
+    to {-webkit-transform: translate(0, -0px);}    
+    from {-moz-transform:translate(0, 0px);}
+    65% {-moz-transform:translate(0, -75px);}
+    to {-moz-transform: translate(0, -0px);}   
+    from {transform:translate(0, 0px);}
+    65% {transform:translate(0, -75px);}
+    to {transform: translate(0, -0px);}  
+}
+
+
+

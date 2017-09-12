@@ -3,38 +3,70 @@
 
 <head>
     <link type="text/css" rel="stylesheet" href="css/pepper.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="css/main.css">
     <script src="js/jquery-2.1.4.min.js" type="text/javascript"></script>
     <script src="js/qimessaging_helper.js" type="text/javascript"></script>
     <script src="js/main.js" type="text/javascript"></script>
 </head>
 
 <body>
+    <div id="adultLauncher" class="container" >
+        <header style="display:none;">
+            <a href="#"   class="leftButton">Go Back</a>
+            <span class="pageTitle">Kids Mode</span>
+            <a href="#" class="rightButton hidden">Continue</a>
+        </header>
+        <article>
+            <div class="content">
+                <ul class="main">
+                    <li><img src="img/qmatic.png" onclick="javascript:raiseEvent('3');"  /><span>QMatic</span></li>
+                    <li><img src="img/assistant.png" onclick="javascript:raiseEvent('7');" /><span>Assistant</span></li>
+                     <li><img src="img/selfie.png" onclick="javascript:raiseEvent('5');" /><span>Selfie</span></li>
+                    <li><img src="img/guide.png" onclick="javascript:raiseEvent('2');" /><span>Guide</span></li>
+                    <li><img src="img/kids.png" onclick="javascript:launcherForKids2('6');" /><span>Kids</span></li>
+                </ul>
+            </div>
+        </article>
+        <footer></footer>
+    </div>
+    <div id="kidsLauncher" class="container kids">
+        <header>
+            <a href="#" class="leftButton" onclick="javascript:backFunction('1');" >Go Back</a>
+            <span class="pageTitle">Kids Mode</span>
+            <a href="#" class="rightButton hidden">Continue</a>
+        </header>
+        <article>
+            <div class="content">
+                <ul class="main">
+                    <li><img src="img/game.png" onclick="javascript:raiseEvent('4');" /><span>Game</span></li>
+                    <li><img src="img/selfie.png" onclick="javascript:raiseEvent('5');" /><span>Selfie</span></li>
+                    <li><img src="img/safe.png"  onclick="javascript:safeFunction('1');"/><span>Safe</span></li>
+                </ul>
+            </div>
+        </article>
+        <footer></footer>
+        <img class="toys car" src="img/car.png" />
+        <img class="toys train" src="img/train.png" />
+        <img class="toys rocket" src="img/rocket.png" />
+        <img class="toys ball" src="img/ball.png" />
+        <img class="toys plane " src="img/plane.png" />
+        <img class="toys spinner" src="img/spinner.png" />
+    </div>
+    
+    
+    
+<!--
 <div id="logo_container">
     <img src="images/logo.png">
 </div>
 <div id="item_adult">
     <ul>
-        <li id="faq" class="item" onclick="javascript:raiseEvent('1');"><i class="fa fa-info-circle"
-                                                                           style="line-height: 198px;"></i><label
-                class="inline_text">FAQ</label></li>
-        <li id="qmatic" class="item" onclick="javascript:raiseEvent('3');"><i class="fa fa-ticket"
-                                                                              style="line-height: 198px;"></i><label
-                class="inline_text">QMatic</label></li>
-        <li id="training" class="item" onclick="javascript:raiseEvent('2');"><i class="fa fa-question-circle-o"
-                                                                                style="line-height: 198px;"></i></i>
-            <label class="inline_text">Guide</label></li>
-        <li id="finie" class="item" onclick="javascript:raiseEvent('7');"><i class="fa fa-money"
-                                                                             style="line-height: 198px;"></i></i><label
-                 class="inline_text" style="font-size: 18pt;">Assistant</label></li>
-        <li id="selfy_adult" class="item" onclick="javascript:raiseEvent('5');"><i class="fa fa-camera"
-                                                                                   style="line-height: 198px;"></i></i>
-            <label class="inline_text">Selfie</label></li>
-        <li id="kids" class="item" onclick="javascript:launcherForKids('6');"><i class="fa fa-child"
-                                                                                 style="line-height: 198px;"></i></i>
-            <label class="inline_text">Kids</label></li>
-
-
+        <li id="faq" class="item" onclick="javascript:raiseEvent('1');"><i class="fa fa-info-circle" style="line-height: 198px;"></i><label class="inline_text">FAQ</label></li>
+        <li id="qmatic" class="item" onclick="javascript:raiseEvent('3');"><i class="fa fa-ticket" style="line-height: 198px;"></i><label class="inline_text">QMatic</label></li>
+        <li id="training" class="item" onclick="javascript:raiseEvent('2');"><i class="fa fa-question-circle-o" style="line-height: 198px;"></i><label class="inline_text">Guide</label></li>
+        <li id="finie" class="item" onclick="javascript:raiseEvent('7');"><i class="fa fa-money" style="line-height: 198px;"></i><label class="inline_text" style="font-size: 18pt;">Assistant</label></li>
+        <li id="selfy_adult" class="item" onclick="javascript:raiseEvent('5');"><i class="fa fa-camera" style="line-height: 198px;"></i><label class="inline_text">Selfie</label></li>
+        <li id="kids" class="item" onclick="javascript:launcherForKids('6');"><i class="fa fa-child" style="line-height: 198px;"></i><label class="inline_text">Kids</label></li>
     </ul>
 </div>
 
@@ -89,6 +121,7 @@
 <div class='leaveapp'>
     <div id="exit" onclick="javascript:exit();">x</div>
 </div>
+-->
 
 </body>
 
